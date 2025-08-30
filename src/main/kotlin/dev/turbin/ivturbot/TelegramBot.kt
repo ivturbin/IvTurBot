@@ -34,9 +34,9 @@ class TelegramBot(
             val response = when {
                 message.isCommand -> {
 
-                    val splittedMessageText = message.text.split("@")
-                    val command = splittedMessageText[0]
-                    val botOfCommand = splittedMessageText[1]
+                    val splitMessageText = message.text.split("@")
+                    val command = splitMessageText[0]
+                    val botOfCommand = splitMessageText[1]
 
                     if (botOfCommand != username.substring(1)) {
                         return
