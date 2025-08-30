@@ -78,6 +78,7 @@ class BotRepository(private val dsl: DSLContext) {
         val result = dsl
             .select(p.HIGHDAY_DT, p.DESCRIPTION)
             .from(p)
+            // fixme: джойнить на реципиента
             .where(nextBirthdayExprP.eq(minNextBirthday))              // <- но в WHERE используем выражение без алиаса!
             .fetch()
 
