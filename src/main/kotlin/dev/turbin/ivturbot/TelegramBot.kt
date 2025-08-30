@@ -36,10 +36,13 @@ class TelegramBot(
 
                     val splitMessageText = message.text.split("@")
                     val command = splitMessageText[0]
-                    val botOfCommand = splitMessageText[1]
 
-                    if (botOfCommand != username.substring(1)) {
-                        return
+                    // Исключить обработку команд других ботов в группе
+                    if (message.chat.type != "private") {
+                        val botOfCommand = splitMessageText[1]
+                        if (botOfCommand != username.substring(1)) {
+                            return
+                        }
                     }
 
                     commandRegistry.findCommand(command)?.execute(message)
