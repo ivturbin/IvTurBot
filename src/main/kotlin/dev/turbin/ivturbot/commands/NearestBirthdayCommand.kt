@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Message
 @Component
 class NearestBirthdayCommand(private val botRepository: BotRepository) : BotCommand {
 
-    override val name = "/nearest"
+    override val name = "/nearest_birthday"
 
     override fun execute(message: Message): SendMessage {
         val birthdays = botRepository.getNearestBirthdays()
