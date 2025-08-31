@@ -1,6 +1,7 @@
-package dev.turbin.ivturbot.commands
+package dev.turbin.ivturbot.handlers.commands
 
 import dev.turbin.ivturbot.BotRepository
+import dev.turbin.ivturbot.enums.Command
 import dev.turbin.ivturbot.jooq.tables.Highday
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.ParseMode
@@ -8,10 +9,10 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Message
 
 @Component
-class BirthdaysCommand(private val botRepository: BotRepository) : BotCommand {
-    override val name = "/birthdays"
+class BirthdaysCommand(private val botRepository: BotRepository) : CommandHandler {
+    override val command = Command.BIRTHDAYS
 
-    override fun execute(message: Message): SendMessage {
+    override fun handleCommand(message: Message): SendMessage {
         val chatId = message.chatId
         val response = SendMessage(chatId.toString(), "")
 

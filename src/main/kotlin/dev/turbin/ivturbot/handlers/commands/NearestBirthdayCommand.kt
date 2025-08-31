@@ -1,17 +1,18 @@
-package dev.turbin.ivturbot.commands
+package dev.turbin.ivturbot.handlers.commands
 
 import dev.turbin.ivturbot.BotRepository
+import dev.turbin.ivturbot.enums.Command
 import dev.turbin.ivturbot.jooq.tables.Highday
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Message
 
 @Component
-class NearestBirthdayCommand(private val botRepository: BotRepository) : BotCommand {
+class NearestBirthdayCommand(private val botRepository: BotRepository) : CommandHandler {
 
-    override val name = "/nearest_birthday"
+    override val command = Command.NEAREST_BIRTHDAY
 
-    override fun execute(message: Message): SendMessage {
+    override fun handleCommand(message: Message): SendMessage {
         val chatId = message.chatId
         val birthdays = botRepository.getNearestBirthdays(chatId)
 

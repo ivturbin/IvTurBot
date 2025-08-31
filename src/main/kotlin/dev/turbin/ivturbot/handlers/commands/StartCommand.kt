@@ -1,6 +1,7 @@
-package dev.turbin.ivturbot.commands
+package dev.turbin.ivturbot.handlers.commands
 
 import dev.turbin.ivturbot.BotRepository
+import dev.turbin.ivturbot.enums.Command
 import dev.turbin.ivturbot.enums.NotificationType
 import dev.turbin.ivturbot.jooq.tables.Recipient
 import org.springframework.stereotype.Component
@@ -8,10 +9,11 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Message
 
 @Component
-class StartCommand(private val botRepository: BotRepository) : BotCommand {
-    override val name = "/start"
+class StartCommand(private val botRepository: BotRepository) : CommandHandler {
 
-    override fun execute(message: Message): SendMessage {
+    override val command = Command.START
+
+    override fun handleCommand(message: Message): SendMessage {
         val chatId = message.chatId
         val response = SendMessage(chatId.toString(), "")
 
