@@ -7,7 +7,6 @@ import dev.turbin.ivturbot.jooq.tables.Highday.HIGHDAY
 import dev.turbin.ivturbot.jooq.tables.HighdayRecipient.HIGHDAY_RECIPIENT
 import dev.turbin.ivturbot.jooq.tables.Recipient.RECIPIENT
 import org.jooq.*
-import org.jooq.impl.DSL
 
 import org.jooq.impl.DSL.*
 import org.springframework.stereotype.Repository
