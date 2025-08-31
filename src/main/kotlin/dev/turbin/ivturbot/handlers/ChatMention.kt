@@ -8,8 +8,8 @@ import org.telegram.telegrambots.meta.api.objects.Update
 @Component
 class ChatMention(@Value("\${telegram.bot.username}") private val username: String) : UpdateHandler{
     override fun supports(update: Update): Boolean {
-        return update.message.chat.type != "private" &&
-                update.message.entities?.any { it.type == "mention" && it.text.equals(username)} == true
+        return update.message?.chat?.type != "private" &&
+                update.message?.entities?.any { it.type == "mention" && it.text.equals(username)} == true
     }
 
     override fun handle(update: Update): SendMessage {

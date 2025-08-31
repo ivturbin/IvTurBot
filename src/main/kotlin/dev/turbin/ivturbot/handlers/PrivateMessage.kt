@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Update
 @Component
 class PrivateMessage : UpdateHandler{
     override fun supports(update: Update): Boolean {
-        return update.message.chat.type == "private" && !update.message.isCommand
+        return update.message?.chat?.type == "private" && update.message?.isCommand == false
     }
 
     override fun handle(update: Update): SendMessage {

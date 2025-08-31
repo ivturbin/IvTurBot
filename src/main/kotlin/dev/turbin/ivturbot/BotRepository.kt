@@ -1,5 +1,6 @@
 package dev.turbin.ivturbot
 
+import dev.turbin.ivturbot.entity.HighdayEntity
 import dev.turbin.ivturbot.enums.HighdayType
 import dev.turbin.ivturbot.enums.NotificationType
 import dev.turbin.ivturbot.jooq.tables.Highday.HIGHDAY
@@ -92,4 +93,16 @@ class BotRepository(private val dsl: DSLContext) {
 
         return result
     }
+
+    fun saveHighday(highdayEntity: HighdayEntity): Long = dsl
+        .insertInto(HIGHDAY, HIGHDAY.DESCRIPTION, HIGHDAY.HIGHDAY_DT, HIGHDAY.HIGHDAY_TYPE)
+        .values(highdayEntity.description, highdayEntity.highdayDt, highdayEntity.highdayType.name)
+        .returningResult(HIGHDAY.HIGHDAY_ID)
+        .fetchOne()!![0] as Long
+
+    fun saveHighdayRecipient(highdayId: Long, recipientId: Long) = dsl
+        .insertInto(HIGHDAY_RECIPIENT)
+        .set(HIGHDAY_RECIPIENT.HIGHDAY_ID, highdayId)
+        .set(HIGHDAY_RECIPIENT.RECIPIENT_ID, recipientId)
+        .execute()
 }
