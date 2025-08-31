@@ -12,8 +12,8 @@ class NearestBirthdayCommand(private val botRepository: BotRepository) : BotComm
     override val name = "/nearest_birthday"
 
     override fun execute(message: Message): SendMessage {
-        val birthdays = botRepository.getNearestBirthdays()
         val chatId = message.chatId
+        val birthdays = botRepository.getNearestBirthdays(chatId)
 
         val response = SendMessage(chatId.toString(), "")
 

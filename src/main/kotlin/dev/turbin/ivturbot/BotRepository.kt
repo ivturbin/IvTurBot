@@ -1,5 +1,6 @@
 package dev.turbin.ivturbot
 
+import dev.turbin.ivturbot.enums.HighdayType
 import dev.turbin.ivturbot.enums.NotificationType
 import dev.turbin.ivturbot.jooq.tables.Highday.HIGHDAY
 import dev.turbin.ivturbot.jooq.tables.HighdayRecipient.HIGHDAY_RECIPIENT
@@ -49,7 +50,7 @@ class BotRepository(private val dsl: DSLContext) {
         .execute()
 
 
-    fun getNearestBirthdays(): Result<Record2<LocalDate, String>> {
+    fun getNearestBirthdays(chatId: Long): Result<Record2<LocalDate, String>> {
         fun makeDate(year: Field<Int>, month: Field<Int>, day: Field<Int>): Field<LocalDate> =
             function("make_date", LocalDate::class.java, year, month, day)
 
@@ -78,8 +79,11 @@ class BotRepository(private val dsl: DSLContext) {
         val result = dsl
             .select(p.HIGHDAY_DT, p.DESCRIPTION)
             .from(p)
-            // fixme: джойнить на реципиента
-            .where(nextBirthdayExprP.eq(minNextBirthday))              // <- но в WHERE используем выражение без алиаса!
+            .join(HIGHDAY_RECIPIENT).on(p.HIGHDAY_ID.eq(HIGHDAY_RECIPIENT.HIGHDAY_ID))
+            .join(RECIPIENT).on(HIGHDAY_RECIPIENT.RECIPIENT_ID.eq(RECIPIENT.RECIPIENT_ID))
+            .where(RECIPIENT.TG_CHAT_ID.eq(chatId))
+            .and(p.HIGHDAY_TYPE.eq(HighdayType.BIRTHDAY.name))
+            .and(nextBirthdayExprP.eq(minNextBirthday))              // <- но в WHERE используем выражение без алиаса!
             .fetch()
 
         return result
