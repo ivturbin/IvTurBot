@@ -46,7 +46,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             HOME="/root/IvTurBot"
-            JAR_PATH="$HOME/IvTurBot.jar"
+            JAR_PATH="$HOME/bot.jar"
             LOG_PATH="$HOME/log/$(date +"%Y-%m-%d_%H:%M:%S").log"
             PID_FILE="$HOME/bot.pid"
             
