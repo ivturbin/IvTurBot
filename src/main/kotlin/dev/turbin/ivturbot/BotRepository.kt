@@ -6,6 +6,7 @@ import dev.turbin.ivturbot.jooq.tables.Highday.HIGHDAY
 import dev.turbin.ivturbot.jooq.tables.HighdayRecipient.HIGHDAY_RECIPIENT
 import dev.turbin.ivturbot.jooq.tables.Recipient.RECIPIENT
 import org.jooq.*
+import org.jooq.impl.DSL
 
 import org.jooq.impl.DSL.*
 import org.springframework.stereotype.Repository
@@ -19,7 +20,10 @@ class BotRepository(private val dsl: DSLContext) {
         .from(HIGHDAY)
         .join(HIGHDAY_RECIPIENT).on(HIGHDAY.HIGHDAY_ID.eq(HIGHDAY_RECIPIENT.HIGHDAY_ID))
         .join(RECIPIENT).on(HIGHDAY_RECIPIENT.RECIPIENT_ID.eq(RECIPIENT.RECIPIENT_ID))
-        .where(HIGHDAY.HIGHDAY_DT.eq(LocalDate.now()))
+        .where(
+            day(HIGHDAY.HIGHDAY_DT).eq(date.dayOfMonth)
+                .and(month(HIGHDAY.HIGHDAY_DT).eq(date.monthValue))
+        )
         .fetch()
 
     fun getAllBirthdaysForChat(chatId: Long) = dsl
