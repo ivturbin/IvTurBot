@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "dev.turbin"
-version = "0.0.2"
+version = "1.0"
 
 java {
     toolchain {
