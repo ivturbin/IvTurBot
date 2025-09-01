@@ -52,9 +52,9 @@ jooq {
             jooqConfiguration.apply {
                 jdbc.apply {
                     driver = "org.postgresql.Driver"
-                    url = ""
-                    user = ""
-                    password = ""
+                    url = System.getenv("JDBC_URL") ?: "jdbc:postgresql://localhost:5432/botdb"
+                    user = System.getenv("JDBC_USER") ?: "postgres"
+                    password = System.getenv("JDBC_PASSWORD") ?: "postgres"
                 }
                 generator.apply {
                     name = "org.jooq.codegen.DefaultGenerator"
