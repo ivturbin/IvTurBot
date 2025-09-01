@@ -1,0 +1,70 @@
+name: Deploy to Server
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Git tag для деплоя (например v1.0.0)'
+        required: true
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build JAR
+        run: ./gradlew clean bootJar -x test
+
+      - name: Copy JAR to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "build/libs/*.jar"
+          target: "/root/IvTurBot/"
+
+      - name: Restart app
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            HOME="/root/IvTurBot"
+            JAR_PATH="$HOME/IvTurBot.jar"
+            LOG_PATH="$HOME/log/$(date +"%Y-%m-%d_%H:%M:%S").log"
+            PID_FILE="$HOME/bot.pid"
+            
+            echo ""
+            
+            # Если PID-файл существует, завершить процесс
+            if [ -f "$PID_FILE" ]; then
+                PID=$(cat "$PID_FILE")
+                if ps -p $PID > /dev/null; then
+                    echo "Stopping existing process with PID $PID"
+                    kill $PID
+                    sleep 30
+                fi
+                rm -f "$PID_FILE"
+            fi
+
+            # Запустить приложение и сохранить его PID
+            echo "$(date +"%Y-%m-%d_%H:%M:%S") Starting new process:"
+            nohup sudo java -Xmx100m -jar "$JAR_PATH" "--spring.config.location=$HOME/application.yml" &> "$LOG_PATH" 2>&1 &
+            echo $! > "$PID_FILE"
+            echo "$(<$PID_FILE)"
